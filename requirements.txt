@@ -1,0 +1,7 @@
+#pip install -r requests.txt
+requests
+#requests>=2.25.0
+dnspython
+#dnspython>=2.0.0
+urllib3
+#urllib3>=1.26.0
