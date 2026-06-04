@@ -5,3 +5,5 @@ dnspython
 #dnspython>=2.0.0
 urllib3
 #urllib3>=1.26.0
+httpx
+#httpx>=0.27.0
