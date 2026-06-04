@@ -180,25 +180,6 @@ class SubdomainEnumerator:
             if self.verbose:
                 self.log(f"[!] HackerTarget search error: {e}", "error")
 
-    def threatcrowd_search(self):
-        """Search ThreatCrowd API"""
-        try:
-            self.log("[-] Searching ThreatCrowd...")
-            url = f"https://www.threatcrowd.org/searchApi/v2/domain/report/?domain={self.domain}"
-            response = self.session.get(url, headers=self.get_headers(), timeout=self.timeout)
-            
-            if response.status_code == 200:
-                try:
-                    data = response.json()
-                    if 'subdomains' in data and data['subdomains']:
-                        for subdomain in data['subdomains']:
-                            self.add_subdomain(subdomain, "ThreatCrowd")
-                except json.JSONDecodeError:
-                    pass
-        except Exception as e:
-            if self.verbose:
-                self.log(f"[!] ThreatCrowd search error: {e}", "error")
-
     def anubis_search(self):
         """Search Anubis API"""
         try:
@@ -314,7 +295,6 @@ class SubdomainEnumerator:
         available_engines = {
             'crt': self.crt_search,
             'hackertarget': self.hackertarget_search,
-            'threatcrowd': self.threatcrowd_search,
             'anubis': self.anubis_search,
             'alienvault': self.alienvault_search,
             'urlscan': self.urlscan_search,

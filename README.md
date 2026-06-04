@@ -8,7 +8,7 @@ What makes this version better:
 ✅ More reliable - Comprehensive error handling and retry mechanisms  
 ✅ Better results - Working data sources provide more subdomains  
 
-Modern Sublist3r enumerates subdomains using multiple reliable sources, including SSL Certificate Transparency logs, HackerTarget, ThreatCrowd, Anubis, AlienVault OTX, URLScan.io, and RapidDNS. It also includes an efficient DNS brute force module with an improved wordlist.
+Modern Sublist3r enumerates subdomains using multiple reliable sources, including SSL Certificate Transparency logs, HackerTarget, Anubis, AlienVault OTX, URLScan.io, and RapidDNS. It also includes an efficient DNS brute force module with an improved wordlist.
 
 # **🛠 Installation**
 ## **Quick Install**  
@@ -124,7 +124,6 @@ Modern Sublist3r uses reliable, working data sources:
 |--------|-------------|-------|-------------|
 | `crt` | SSL Certificate Transparency | Fast | High |
 | `hackertarget` | HackerTarget API | Fast | High |
-| `threatcrowd` | ThreatCrowd Database (⚠️ service discontinued — returns no results) | Medium | Offline |
 | `anubis` | Anubis Subdomain DB | Fast | High |
 | `alienvault` | AlienVault OTX | Medium | Medium |
 | `urlscan` | URLScan.io | Medium | Medium |
@@ -181,7 +180,7 @@ SubdomainEnumerator(domain, verbose=False, silent=False, timeout=10)
 
 | Metric | Original Sublist3r | Modern Sublist3r | Improvement |
 |--------|-------------------|------------------|-------------|
-| **Working APIs** | ~20% (2/11) | 100% (7/7) | 5x more reliable |
+| **Working APIs** | ~20% (2/11) | 100% (6/6) | 5x more reliable |
 | **Speed** | 245 seconds | 67 seconds | 3.7x faster |
 | **Results** | 23 subdomains | 89 subdomains | 3.9x more results |
 | **Memory Usage** | 120MB peak | 80MB peak | 33% less memory |
@@ -200,7 +199,6 @@ SubdomainEnumerator(domain, verbose=False, silent=False, timeout=10)
 ### ✅ Added (New Working Sources):
 - **SSL Certificate Transparency** - crt.sh database
 - **HackerTarget API** - Reliable subdomain enumeration
-- **Updated ThreatCrowd** - Fixed implementation
 - **Anubis Database** - Modern subdomain collection
 - **AlienVault OTX** - Threat intelligence platform
 - **URLScan.io** - Website scanning service
