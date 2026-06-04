@@ -1,0 +1,9 @@
+{
+  "results": [
+    {"page": {"domain": "www.example.com"}, "task": {"domain": "www.example.com"}},
+    {"page": {"domain": "portal.example.com"}, "task": {"domain": "example.com"}},
+    {"page": {"domain": "tracker.evil.com"}, "task": {"domain": "tracker.evil.com"}}
+  ],
+  "has_more": false,
+  "total": 3
+}

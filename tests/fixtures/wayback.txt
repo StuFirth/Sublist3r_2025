@@ -1,0 +1,5 @@
+http://www.example.com/
+https://shop.example.com/cart?id=1
+http://blog.example.com:8080/post/1
+https://www.example.com/about
+http://malicious-example.com/

@@ -1,0 +1,6 @@
+[
+  {"name_value": "www.example.com\nmail.example.com", "common_name": "www.example.com"},
+  {"name_value": "*.example.com", "common_name": "*.example.com"},
+  {"name_value": "shop.example.com", "common_name": "admin@example.com"},
+  {"name_value": "notexample.com", "common_name": "evil.notexample.com"}
+]

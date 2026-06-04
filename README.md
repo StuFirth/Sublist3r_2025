@@ -1,251 +1,211 @@
-# **🚀 About Modern Sublist3r**
-Modern Sublist3r is a completely modernized and fixed version of the popular Sublist3r subdomain enumeration tool. The original Sublist3r had numerous broken APIs, expired dependencies, and Python 2/3 compatibility issues. This version fixes all those problems while maintaining the same easy-to-use interface.
+# **🚀 About Sublist3r (2026)**
+
+Sublist3r is a fast subdomain-enumeration tool for penetration testers and bug hunters. This is the **2026 rework** — a ground-up modernization of the original Sublist3r that replaces the legacy process-per-engine design with a single **`asyncio` + `httpx`** core and a set of reliable, **key-less** OSINT data sources.
+
 What makes this version better:
 
-✅ All APIs working - Replaced dead endpoints with functional alternatives  
-✅ Python 3 native - Modern code with type hints and async capabilities  
-✅ 3-5x faster - Parallel processing and efficient threading  
-✅ More reliable - Comprehensive error handling and retry mechanisms  
-✅ Better results - Working data sources provide more subdomains  
+✅ **Concurrent by design** — all sources run in one async event loop, no multiprocessing/pickling fragility
+✅ **Reliable sources** — dead search-engine scrapers replaced with Certificate-Transparency and passive-DNS APIs (no API keys required)
+✅ **Fails soft** — a broken or rate-limited source logs a warning and is skipped; it never crashes the run
+✅ **Backward compatible** — the classic CLI (`python sublist3r.py -d …`) and library API (`import sublist3r; sublist3r.main(...)`) still work
+✅ **Tested** — 26 offline unit tests plus opt-in live network tests
 
-Modern Sublist3r enumerates subdomains using multiple reliable sources, including SSL Certificate Transparency logs, HackerTarget, ThreatCrowd, Anubis, AlienVault OTX, URLScan.io, and RapidDNS. It also includes an efficient DNS brute force module with an improved wordlist.
+Sublist3r enumerates subdomains using certificate-transparency logs (**crt.sh**, **Cert Spotter**), passive-DNS providers (**HackerTarget**, **AlienVault OTX**, **RapidDNS**, **Anubis**) and historical-URL datasets (**Wayback Machine**, **urlscan.io**), plus an optional DNS brute-force module ([subbrute](https://github.com/TheRook/subbrute)) with a large wordlist.
 
 # **🛠 Installation**
-## **Quick Install**  
+
+## **Quick Install**
 ### Clone the repository
-* `git clone https://github.com/StuFirth/modern-sublist3r.git`
-* `cd modern-sublist3r`
-  
+* `git clone https://github.com/StuFirth/Sublist3r_2025.git`
+* `cd Sublist3r_2025`
+
 ### Install dependencies
 * `pip install -r requirements.txt`
 
-### **Run the tool**  
+### Run the tool
+* `python sublist3r.py -d example.com`
 
-* `python3 modern_sublist3r.py -d example.com`  
+## **Install as a package**
+This also installs a `sublist3r` console command and pulls in the dependencies:
 
-## **Manual Installation**
-Install dependencies individually  
+```
+pip install .
+```
 
-`pip install requests dnspython urllib3`  
+You can then run it as `sublist3r -d example.com` or `python -m sublist3rlib -d example.com`.
 
-🐍 Python Version Requirements
-Modern Sublist3r supports Python 3.6+ only. Python 2 support has been dropped to enable modern features and better performance.
+## 🐍 Python Version Requirements
 
-* **Recommended version:** Python 3.8+
-* **Minimum version:** Python 3.6
+Sublist3r requires **Python 3.8+**. Python 2 support has been removed.
 
 # **📦 Dependencies**
-Modern Sublist3r has minimal, reliable dependencies:  
 
 | Package | Version | Purpose |
 |----------|----------|----------|
-| `requests` | >2.25.0 | HTTP requests to APIs |
-| `dnspython` | >2.0.0 | DNS resolution and brute force |
-| `urllib3` | >1.26.0 | SSL warning suppression |
+| `httpx` | >=0.27 | Async HTTP client for all passive sources |
+| `dnspython` | >=2.0,<3 | DNS resolution for the brute-force module |
+| `requests` | >=2.20 | Used by the bundled subbrute module |
 
-### **Installation Methods:**  
+On Windows, install `colorama` for coloured output: `pip install colorama`.
 
-**Using requirements.txt:**
-```
-bash  
-pip install -r requirements.txt  
-```
-**Individual installation:**  
-```
-bash  
-pip install requests dnspython urllib3  
-```  
-**System package managers:**  
-`bash`
-```
-# Ubuntu/Debian
-sudo apt update && sudo apt install python3-pip
-pip3 install requests dnspython urllib3
-```
-```
-# CentOS/RHEL/Fedora  
-sudo yum install python3-pip
-pip3 install requests dnspython urllib3
-```
-```
-# macOS with Homebrew
-brew install python3
-pip3 install requests dnspython urllib3
-```
-
-📖 Usage
+# **📖 Usage**
 
 ### Command Line Options
 
 | Short | Long | Description |
 |-------|------|-------------|
-| `-d` | `--domain` | Domain name to enumerate subdomains (required) |
-| `-o` | `--output` | Save results to text file |
-| `-v` | `--verbose` | Enable verbose output with source attribution |
-| `-s` | `--silent` | Silent mode (no banner or progress) |
-| `-e` | `--engines` | Comma-separated list of engines to use |
-| `-t` | `--threads` | Number of threads for DNS bruteforce (default: 10) |
-| `--timeout` | `--timeout` | Request timeout in seconds (default: 10) |
-| `--no-color` | `--no-color` | Disable colored output |
-| `-h` | `--help` | Show help message and exit |
+| `-d` | `--domain` | Domain name to enumerate (required) |
+| `-b` | `--bruteforce` | Enable the subbrute DNS brute-force module |
+| `-p` | `--ports` | Scan found subdomains against the given TCP ports |
+| `-v` | `--verbose` | Show subdomains in real time as they are found |
+| `-t` | `--threads` | Threads for the brute-force module (default: 30) |
+| `-e` | `--engines` | Comma-separated list of sources to use |
+| `-o` | `--output` | Save results to a text file |
+| `-n` | `--no-color` | Disable coloured output |
+| `-h` | `--help` | Show the help message and exit |
 
 ### Examples
 
 **Basic enumeration:**
 ```bash
-python3 modern_sublist3r.py -d example.com
+python sublist3r.py -d example.com
 ```
 
-**Verbose output with file save:**
+**Verbose output, saved to a file:**
 ```bash
-python3 modern_sublist3r.py -d example.com -v -o results.txt
+python sublist3r.py -d example.com -v -o results.txt
 ```
 
-**Use specific engines only:**
+**Enable DNS brute-force:**
 ```bash
-python3 modern_sublist3r.py -d example.com -e crt,hackertarget,anubis
+python sublist3r.py -d example.com -b
 ```
 
-**Silent mode for automation:**
+**Use specific sources only:**
 ```bash
-python3 modern_sublist3r.py -d example.com -s -o /tmp/subdomains.txt
+python sublist3r.py -d example.com -e crtsh,hackertarget,anubis
 ```
 
-**Custom timeout and threading:**
+**Find subdomains with open ports 80/443:**
 ```bash
-python3 modern_sublist3r.py -d example.com --timeout 15 -t 20
+python sublist3r.py -d example.com -p 80,443
 ```
 
-## 🔧 Available Engines
+## 🔧 Available Sources
 
-Modern Sublist3r uses reliable, working data sources:
+All sources are free and require **no API key**:
 
-| Engine | Description | Speed | Reliability |
-|--------|-------------|-------|-------------|
-| `crt` | SSL Certificate Transparency | Fast | High |
-| `hackertarget` | HackerTarget API | Fast | High |
-| `threatcrowd` | ThreatCrowd Database | Medium | High |
-| `anubis` | Anubis Subdomain DB | Fast | High |
-| `alienvault` | AlienVault OTX | Medium | Medium |
-| `urlscan` | URLScan.io | Medium | Medium |
-| `rapiddns` | RapidDNS Service | Fast | Medium |
+| Source (`-e` key) | Type | Description |
+|--------|------|-------------|
+| `crtsh` | Certificate Transparency | crt.sh CT-log search (JSON) |
+| `certspotter` | Certificate Transparency | Cert Spotter issuances API |
+| `hackertarget` | Passive DNS | HackerTarget hostsearch |
+| `alienvault` | Passive DNS | AlienVault OTX passive DNS |
+| `rapiddns` | Passive DNS | RapidDNS subdomain records |
+| `anubis` | Aggregated DB | jldc.me Anubis database |
+| `wayback` | Historical URLs | Wayback Machine CDX index |
+| `urlscan` | Historical URLs | urlscan.io scanned-page search |
 
-**DNS Bruteforce** is always enabled and uses an optimized wordlist of 50 common subdomains.
+> **Legacy engine names are still accepted.** `ssl` maps to `crtsh` and `passivedns` maps to `alienvault`; removed search-engine scrapers (`google`, `yahoo`, `bing`, `baidu`, `ask`, `netcraft`, `dnsdumpster`, `virustotal`, `threatcrowd`) are ignored with a warning.
 
-## 🐍 Using as a Python Module
+**DNS brute-force** (`-b`) uses the bundled subbrute module with its large wordlist and DNS spidering.
 
-You can integrate Modern Sublist3r into your Python scripts:
+## 🐍 Using Sublist3r as a Python Module
 
 ```python
-from modern_sublist3r import SubdomainEnumerator
+import sublist3r
 
-# Create enumerator instance
-enumerator = SubdomainEnumerator(
-    domain="example.com",
-    verbose=True,
-    silent=False,
-    timeout=10
+subdomains = sublist3r.main(
+    'example.com',     # domain
+    30,                # threads (for brute-force)
+    None,              # savefile
+    None,              # ports
+    True,              # silent
+    False,             # verbose
+    False,             # enable_bruteforce
+    None,              # engines (None = all sources)
 )
-
-# Run enumeration
-subdomains = enumerator.enumerate(
-    enable_bruteforce=True,
-    engines=['crt', 'hackertarget', 'anubis']
-)
-
-print(f"Found {len(subdomains)} subdomains:")
-for subdomain in subdomains:
-    print(f"  {subdomain}")
+print(f"Found {len(subdomains)} subdomains")
 ```
 
-### API Reference
+`main()` returns a sorted list of unique subdomains. The signature is unchanged from the original Sublist3r, so existing scripts keep working.
 
-**SubdomainEnumerator Class:**
+For async callers, an `async` entry point is also available:
+
 ```python
-SubdomainEnumerator(domain, verbose=False, silent=False, timeout=10)
+import asyncio
+from sublist3rlib import main_async
+
+subdomains = asyncio.run(main_async('example.com', engines='crtsh,hackertarget'))
 ```
 
-**Parameters:**
-- **`domain`** (str): Target domain to enumerate
-- **`verbose`** (bool): Show detailed output with sources  
-- **`silent`** (bool): Suppress all output
-- **`timeout`** (int): Request timeout in seconds
+## 🏗️ Architecture
 
-**Methods:**
-- **`enumerate(enable_bruteforce=True, engines=None)`**: Main enumeration function
-- **`crt_search()`**: Search SSL certificates
-- **`hackertarget_search()`**: Search HackerTarget API
-- **`dns_bruteforce()`**: DNS bruteforce attack
+```
+sublist3r.py            # thin shim: preserves the CLI + import sublist3r API
+sublist3rlib/           # the package
+  core.py               # async orchestrator (gather_passive, main_async)
+  http_client.py        # shared httpx.AsyncClient (timeouts, retries, conn cap)
+  sources/              # Source base + 8 sources + registry/legacy aliases
+  normalize.py          # validation, host cleanup, subdomain sorting
+  bruteforce.py         # wrapper around the bundled subbrute module
+  output.py / logutil.py
+subbrute/               # bundled DNS brute-forcer + wordlists
+tests/                  # 26 offline tests + opt-in network tests
+```
 
-## 🚀 Performance Comparison
+- Sources run concurrently via `asyncio.gather(return_exceptions=True)`; one failing source can never abort the run.
+- Each source fails soft (logs a warning, returns an empty set) and retries rate-limited/transient responses with back-off.
 
-| Metric | Original Sublist3r | Modern Sublist3r | Improvement |
-|--------|-------------------|------------------|-------------|
-| **Working APIs** | ~20% (2/11) | 100% (7/7) | 5x more reliable |
-| **Speed** | 245 seconds | 67 seconds | 3.7x faster |
-| **Results** | 23 subdomains | 89 subdomains | 3.9x more results |
-| **Memory Usage** | 120MB peak | 80MB peak | 33% less memory |
-| **Error Rate** | 82% API failures | 0% API failures | 100% improvement |
+## ✅ Testing
 
-## 🛡️ What's Fixed
+```bash
+pip install pytest pytest-asyncio
+pytest                 # 26 offline tests (no network)
+pytest --run-network   # also run live smoke tests against real APIs
+```
 
-### ❌ Removed (Broken in Original):
-- **PassiveDNS** - API endpoint completely dead
-- **VirusTotal** - Requires API key, complex authentication
-- **Google/Yahoo/Bing Search** - Heavy bot detection
-- **Ask/Baidu Search** - Changed APIs, geographic blocks
-- **Netcraft/DNSdumpster** - CSRF protection, complex headers
-- **Python 2 compatibility** - Removed deprecated code
+## 🛡️ What changed from the original Sublist3r
 
-### ✅ Added (New Working Sources):
-- **SSL Certificate Transparency** - crt.sh database
-- **HackerTarget API** - Reliable subdomain enumeration
-- **Updated ThreatCrowd** - Fixed implementation
-- **Anubis Database** - Modern subdomain collection
-- **AlienVault OTX** - Threat intelligence platform
-- **URLScan.io** - Website scanning service
-- **RapidDNS** - Fast DNS enumeration service
+### ❌ Removed (broken in the original)
+- **Search-engine scrapers** (Google, Yahoo, Bing, Ask, Baidu) — bot-blocked / fragile HTML scraping
+- **Netcraft, DNSdumpster** — CSRF/JS-challenge protected
+- **VirusTotal** — requires an API key
+- **PassiveDNS** (`api.sublist3r.com`) — endpoint now serves a JS challenge
+- **ThreatCrowd** — service discontinued
+- **Python 2 compatibility** and the `multiprocessing.Manager()` source layer
 
-### 🔧 Technical Improvements:
-- **Parallel processing** - All sources run simultaneously
-- **Connection pooling** - HTTP session reuse
-- **Retry mechanisms** - Automatic error recovery
-- **Rate limiting** - Intelligent delays to avoid blocks
-- **Input validation** - Comprehensive domain checking
-- **Modern Python** - Type hints, f-strings, pathlib
+### ✅ Added / improved
+- **`asyncio` + `httpx`** concurrent core
+- **Cert Spotter** and **Wayback Machine** as new sources
+- Per-source **fail-soft** handling, retry/back-off, and a global connection cap
+- Centralized normalization: apex exclusion, dot-anchored scope checks (rejects look-alike domains such as `evilexample.com`), URL/port/email cleanup
+- A **pytest** suite and a clean, importable package layout
+
+### 📈 Efficacy
+
+In a back-to-back passive-only run against `iana.org`, the 2026 rework returned a **strict superset** of the previous version's results (~2× the subdomains) while correctly excluding the apex domain. Coverage gains come from the two extra sources and improved normalization. (Live counts vary with third-party rate limits.)
 
 ## 📄 License
 
-Modern Sublist3r maintains the same **GNU GPL v3.0** license as the original project. See [LICENSE](LICENSE) for details.
+Sublist3r is licensed under the **GNU GPL v3.0**. See [LICENSE](LICENSE) for details.
 
 ## 🙏 Credits
 
-- **Original Sublist3r**: [Ahmed Aboul-Ela](https://github.com/aboul3la) - Creator of the original tool
-- **Subbrute Integration**: [TheRook](https://github.com/TheRook) - DNS bruteforce methodology  
-- **Wordlist Research**: [Bitquark](https://github.com/bitquark) - DNSpop research for wordlists
-- **Modernization**: Fixed and updated for 2025 reliability
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-**Areas for contribution:**
-- Additional working data sources
-- Performance optimizations  
-- Extended wordlists
-- Output format improvements
-- Integration with other tools
+- **Original Sublist3r**: [Ahmed Aboul-Ela](https://github.com/aboul3la) — creator of the original tool
+- **subbrute**: [TheRook](https://github.com/TheRook) — DNS brute-force module
+- **Wordlist research**: [Bitquark](https://github.com/bitquark) — dnspop research
+- **2026 rework**: async core, modern sources, and test suite
 
 ## ⚠️ Disclaimer
 
-This tool is designed for **authorized security testing and educational purposes only**. Always ensure you have explicit permission before scanning any domain you do not own. The authors are not responsible for any misuse of this tool.
+This tool is for **authorized security testing and educational purposes only**. Always ensure you have explicit permission before scanning any domain you do not own. The authors are not responsible for misuse.
 
 ## 📈 Version History
 
-- **v2.0.0** (2025) - Complete rewrite with working APIs and Python 3 compatibility
-- **v1.0.0** (2016) - Original Sublist3r by Ahmed Aboul-Ela
+- **v2.0** (2026) — async + httpx rework, key-less CT/passive-DNS sources, test suite
+- **v1.0** (2016) — original Sublist3r by Ahmed Aboul-Ela
 
 ---
 
-**Current Version: 2.0.0** - Completely modernized and reliable ✨
----
+**Current Version: 2.0** — async, reliable, and tested ✨
