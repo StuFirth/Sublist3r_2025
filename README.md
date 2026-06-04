@@ -13,8 +13,8 @@ Modern Sublist3r enumerates subdomains using multiple reliable sources, includin
 # **🛠 Installation**
 ## **Quick Install**  
 ### Clone the repository
-* `git clone https://github.com/StuFirth/modern-sublist3r.git`
-* `cd modern-sublist3r`
+* `git clone https://github.com/StuFirth/Sublist3r_2025.git`
+* `cd Sublist3r_2025`
   
 ### Install dependencies
 * `pip install -r requirements.txt`
@@ -124,13 +124,13 @@ Modern Sublist3r uses reliable, working data sources:
 |--------|-------------|-------|-------------|
 | `crt` | SSL Certificate Transparency | Fast | High |
 | `hackertarget` | HackerTarget API | Fast | High |
-| `threatcrowd` | ThreatCrowd Database | Medium | High |
+| `threatcrowd` | ThreatCrowd Database (⚠️ service discontinued — returns no results) | Medium | Offline |
 | `anubis` | Anubis Subdomain DB | Fast | High |
 | `alienvault` | AlienVault OTX | Medium | Medium |
 | `urlscan` | URLScan.io | Medium | Medium |
 | `rapiddns` | RapidDNS Service | Fast | Medium |
 
-**DNS Bruteforce** is always enabled and uses an optimized wordlist of 50 common subdomains.
+**DNS Bruteforce** is always enabled and uses an optimized wordlist of 52 common subdomains.
 
 ## 🐍 Using as a Python Module
 
