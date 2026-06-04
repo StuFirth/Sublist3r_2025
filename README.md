@@ -15,9 +15,11 @@ Sublist3r enumerates subdomains using certificate-transparency logs (**crt.sh**,
 # **🛠 Installation**
 
 ## **Quick Install**
-### Clone the repository
-* `git clone https://github.com/StuFirth/Sublist3r_2025.git`
+### Clone the latest tagged release (v2.0)
+* `git clone --branch v2.0 https://github.com/StuFirth/Sublist3r_2025.git`
 * `cd Sublist3r_2025`
+
+> To track ongoing development instead, clone the default branch: `git clone https://github.com/StuFirth/Sublist3r_2025.git`
 
 ### Install dependencies
 * `pip install -r requirements.txt`
