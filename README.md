@@ -1,251 +1,122 @@
-# **🚀 About Modern Sublist3r**
-Modern Sublist3r is a completely modernized and fixed version of the popular Sublist3r subdomain enumeration tool. The original Sublist3r had numerous broken APIs, expired dependencies, and Python 2/3 compatibility issues. This version fixes all those problems while maintaining the same easy-to-use interface.
-What makes this version better:
+## About Sublist3r 
 
-✅ All APIs working - Replaced dead endpoints with functional alternatives  
-✅ Python 3 native - Modern code with type hints and async capabilities  
-✅ 3-5x faster - Parallel processing and efficient threading  
-✅ More reliable - Comprehensive error handling and retry mechanisms  
-✅ Better results - Working data sources provide more subdomains  
+Sublist3r is a python tool designed to enumerate subdomains of websites using OSINT. It helps penetration testers and bug hunters collect and gather subdomains for the domain they are targeting. Sublist3r queries a set of free, key-less passive sources concurrently (asyncio): certificate-transparency logs (**crt.sh**, **Cert Spotter**), passive-DNS providers (**HackerTarget**, **AlienVault OTX**, **RapidDNS**, **Anubis**) and historical-URL datasets (**Wayback Machine**, **urlscan.io**).
 
-Modern Sublist3r enumerates subdomains using multiple reliable sources, including SSL Certificate Transparency logs, HackerTarget, ThreatCrowd, Anubis, AlienVault OTX, URLScan.io, and RapidDNS. It also includes an efficient DNS brute force module with an improved wordlist.
+[subbrute](https://github.com/TheRook/subbrute) was integrated with Sublist3r to increase the possibility of finding more subdomains using bruteforce with an improved wordlist. The credit goes to TheRook who is the author of subbrute.
 
-# **🛠 Installation**
-## **Quick Install**  
-### Clone the repository
-* `git clone https://github.com/StuFirth/modern-sublist3r.git`
-* `cd modern-sublist3r`
-  
-### Install dependencies
-* `pip install -r requirements.txt`
+## Screenshots
 
-### **Run the tool**  
+![Sublist3r](http://www.secgeek.net/images/Sublist3r.png "Sublist3r in action")
 
-* `python3 modern_sublist3r.py -d example.com`  
 
-## **Manual Installation**
-Install dependencies individually  
+## Installation
 
-`pip install requests dnspython urllib3`  
-
-🐍 Python Version Requirements
-Modern Sublist3r supports Python 3.6+ only. Python 2 support has been dropped to enable modern features and better performance.
-
-* **Recommended version:** Python 3.8+
-* **Minimum version:** Python 3.6
-
-# **📦 Dependencies**
-Modern Sublist3r has minimal, reliable dependencies:  
-
-| Package | Version | Purpose |
-|----------|----------|----------|
-| `requests` | >2.25.0 | HTTP requests to APIs |
-| `dnspython` | >2.0.0 | DNS resolution and brute force |
-| `urllib3` | >1.26.0 | SSL warning suppression |
-
-### **Installation Methods:**  
-
-**Using requirements.txt:**
 ```
-bash  
-pip install -r requirements.txt  
-```
-**Individual installation:**  
-```
-bash  
-pip install requests dnspython urllib3  
-```  
-**System package managers:**  
-`bash`
-```
-# Ubuntu/Debian
-sudo apt update && sudo apt install python3-pip
-pip3 install requests dnspython urllib3
-```
-```
-# CentOS/RHEL/Fedora  
-sudo yum install python3-pip
-pip3 install requests dnspython urllib3
-```
-```
-# macOS with Homebrew
-brew install python3
-pip3 install requests dnspython urllib3
+git clone https://github.com/aboul3la/Sublist3r.git
 ```
 
-📖 Usage
+## Recommended Python Version:
 
-### Command Line Options
+Sublist3r requires **Python 3.8+**. (Python 2 support was removed.)
 
-| Short | Long | Description |
-|-------|------|-------------|
-| `-d` | `--domain` | Domain name to enumerate subdomains (required) |
-| `-o` | `--output` | Save results to text file |
-| `-v` | `--verbose` | Enable verbose output with source attribution |
-| `-s` | `--silent` | Silent mode (no banner or progress) |
-| `-e` | `--engines` | Comma-separated list of engines to use |
-| `-t` | `--threads` | Number of threads for DNS bruteforce (default: 10) |
-| `--timeout` | `--timeout` | Request timeout in seconds (default: 10) |
-| `--no-color` | `--no-color` | Disable colored output |
-| `-h` | `--help` | Show help message and exit |
+## Dependencies:
+
+Sublist3r depends on the `httpx`, `dnspython` and `requests` python modules.
+
+Install them using the requirements file:
+
+```
+pip install -r requirements.txt
+```
+
+Or install the package (which pulls in the dependencies and provides a `sublist3r` command):
+
+```
+pip install .
+```
+
+On Windows, install `colorama` for coloured output: `pip install colorama`.
+
+## Usage
+
+Short Form    | Long Form     | Description
+------------- | ------------- |-------------
+-d            | --domain      | Domain name to enumerate subdomains of
+-b            | --bruteforce  | Enable the subbrute bruteforce module
+-p            | --ports       | Scan the found subdomains against specific tcp ports
+-v            | --verbose     | Enable the verbose mode and display results in realtime
+-t            | --threads     | Number of threads to use for subbrute bruteforce
+-e            | --engines     | Specify a comma-separated list of sources (e.g. crtsh,certspotter,hackertarget,alienvault,rapiddns,anubis,wayback,urlscan)
+-o            | --output      | Save the results to text file
+-h            | --help        | show the help message and exit
 
 ### Examples
 
-**Basic enumeration:**
-```bash
-python3 modern_sublist3r.py -d example.com
-```
+* To list all the basic options and switches use -h switch:
 
-**Verbose output with file save:**
-```bash
-python3 modern_sublist3r.py -d example.com -v -o results.txt
-```
+```python sublist3r.py -h```
 
-**Use specific engines only:**
-```bash
-python3 modern_sublist3r.py -d example.com -e crt,hackertarget,anubis
-```
+* To enumerate subdomains of specific domain:
 
-**Silent mode for automation:**
-```bash
-python3 modern_sublist3r.py -d example.com -s -o /tmp/subdomains.txt
-```
+``python sublist3r.py -d example.com``
 
-**Custom timeout and threading:**
-```bash
-python3 modern_sublist3r.py -d example.com --timeout 15 -t 20
-```
+* To enumerate subdomains of specific domain and show only subdomains which have open ports 80 and 443 :
 
-## 🔧 Available Engines
+``python sublist3r.py -d example.com -p 80,443``
 
-Modern Sublist3r uses reliable, working data sources:
+* To enumerate subdomains of specific domain and show the results in realtime:
 
-| Engine | Description | Speed | Reliability |
-|--------|-------------|-------|-------------|
-| `crt` | SSL Certificate Transparency | Fast | High |
-| `hackertarget` | HackerTarget API | Fast | High |
-| `threatcrowd` | ThreatCrowd Database | Medium | High |
-| `anubis` | Anubis Subdomain DB | Fast | High |
-| `alienvault` | AlienVault OTX | Medium | Medium |
-| `urlscan` | URLScan.io | Medium | Medium |
-| `rapiddns` | RapidDNS Service | Fast | Medium |
+``python sublist3r.py -v -d example.com``
 
-**DNS Bruteforce** is always enabled and uses an optimized wordlist of 50 common subdomains.
+* To enumerate subdomains and enable the bruteforce module:
 
-## 🐍 Using as a Python Module
+``python sublist3r.py -b -d example.com``
 
-You can integrate Modern Sublist3r into your Python scripts:
+* To enumerate subdomains using specific sources such as crt.sh and HackerTarget:
+
+``python sublist3r.py -e crtsh,hackertarget -d example.com``
+
+Legacy engine names (e.g. `ssl`, `google`, `virustotal`) are still accepted: `ssl` maps to `crtsh`, and removed search-engine scrapers are ignored with a warning.
+
+
+## Using Sublist3r as a module in your python scripts
+
+**Example**
 
 ```python
-from modern_sublist3r import SubdomainEnumerator
-
-# Create enumerator instance
-enumerator = SubdomainEnumerator(
-    domain="example.com",
-    verbose=True,
-    silent=False,
-    timeout=10
-)
-
-# Run enumeration
-subdomains = enumerator.enumerate(
-    enable_bruteforce=True,
-    engines=['crt', 'hackertarget', 'anubis']
-)
-
-print(f"Found {len(subdomains)} subdomains:")
-for subdomain in subdomains:
-    print(f"  {subdomain}")
+import sublist3r 
+subdomains = sublist3r.main(domain, no_threads, savefile, ports, silent, verbose, enable_bruteforce, engines)
 ```
+The main function will return a set of unique subdomains found by Sublist3r
 
-### API Reference
+**Function Usage:**
+* **domain**: The domain you want to enumerate subdomains of.
+* **savefile**: save the output into text file.
+* **ports**: specify a comma-sperated list of the tcp ports to scan.
+* **silent**: set sublist3r to work in silent mode during the execution (helpful when you don't need a lot of noise).
+* **verbose**: display the found subdomains in real time.
+* **enable_bruteforce**: enable the bruteforce module.
+* **engines**: (Optional) to choose specific engines.
 
-**SubdomainEnumerator Class:**
+Example to enumerate subdomains of Yahoo.com:
 ```python
-SubdomainEnumerator(domain, verbose=False, silent=False, timeout=10)
+import sublist3r 
+subdomains = sublist3r.main('yahoo.com', 40, 'yahoo_subdomains.txt', ports= None, silent=False, verbose= False, enable_bruteforce= False, engines=None)
 ```
 
-**Parameters:**
-- **`domain`** (str): Target domain to enumerate
-- **`verbose`** (bool): Show detailed output with sources  
-- **`silent`** (bool): Suppress all output
-- **`timeout`** (int): Request timeout in seconds
+## License
 
-**Methods:**
-- **`enumerate(enable_bruteforce=True, engines=None)`**: Main enumeration function
-- **`crt_search()`**: Search SSL certificates
-- **`hackertarget_search()`**: Search HackerTarget API
-- **`dns_bruteforce()`**: DNS bruteforce attack
+Sublist3r is licensed under the GNU GPL license. take a look at the [LICENSE](https://github.com/aboul3la/Sublist3r/blob/master/LICENSE) for more information.
 
-## 🚀 Performance Comparison
 
-| Metric | Original Sublist3r | Modern Sublist3r | Improvement |
-|--------|-------------------|------------------|-------------|
-| **Working APIs** | ~20% (2/11) | 100% (7/7) | 5x more reliable |
-| **Speed** | 245 seconds | 67 seconds | 3.7x faster |
-| **Results** | 23 subdomains | 89 subdomains | 3.9x more results |
-| **Memory Usage** | 120MB peak | 80MB peak | 33% less memory |
-| **Error Rate** | 82% API failures | 0% API failures | 100% improvement |
+## Credits
 
-## 🛡️ What's Fixed
+* [TheRook](https://github.com/TheRook) - The bruteforce module was based on his script **subbrute**. 
+* [Bitquark](https://github.com/bitquark) - The Subbrute's wordlist was based on his research **dnspop**. 
 
-### ❌ Removed (Broken in Original):
-- **PassiveDNS** - API endpoint completely dead
-- **VirusTotal** - Requires API key, complex authentication
-- **Google/Yahoo/Bing Search** - Heavy bot detection
-- **Ask/Baidu Search** - Changed APIs, geographic blocks
-- **Netcraft/DNSdumpster** - CSRF protection, complex headers
-- **Python 2 compatibility** - Removed deprecated code
+## Thanks
 
-### ✅ Added (New Working Sources):
-- **SSL Certificate Transparency** - crt.sh database
-- **HackerTarget API** - Reliable subdomain enumeration
-- **Updated ThreatCrowd** - Fixed implementation
-- **Anubis Database** - Modern subdomain collection
-- **AlienVault OTX** - Threat intelligence platform
-- **URLScan.io** - Website scanning service
-- **RapidDNS** - Fast DNS enumeration service
+* Special Thanks to [Ibrahim Mosaad](https://twitter.com/ibrahim_mosaad) for his great contributions that helped in improving the tool.
 
-### 🔧 Technical Improvements:
-- **Parallel processing** - All sources run simultaneously
-- **Connection pooling** - HTTP session reuse
-- **Retry mechanisms** - Automatic error recovery
-- **Rate limiting** - Intelligent delays to avoid blocks
-- **Input validation** - Comprehensive domain checking
-- **Modern Python** - Type hints, f-strings, pathlib
-
-## 📄 License
-
-Modern Sublist3r maintains the same **GNU GPL v3.0** license as the original project. See [LICENSE](LICENSE) for details.
-
-## 🙏 Credits
-
-- **Original Sublist3r**: [Ahmed Aboul-Ela](https://github.com/aboul3la) - Creator of the original tool
-- **Subbrute Integration**: [TheRook](https://github.com/TheRook) - DNS bruteforce methodology  
-- **Wordlist Research**: [Bitquark](https://github.com/bitquark) - DNSpop research for wordlists
-- **Modernization**: Fixed and updated for 2025 reliability
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-**Areas for contribution:**
-- Additional working data sources
-- Performance optimizations  
-- Extended wordlists
-- Output format improvements
-- Integration with other tools
-
-## ⚠️ Disclaimer
-
-This tool is designed for **authorized security testing and educational purposes only**. Always ensure you have explicit permission before scanning any domain you do not own. The authors are not responsible for any misuse of this tool.
-
-## 📈 Version History
-
-- **v2.0.0** (2025) - Complete rewrite with working APIs and Python 3 compatibility
-- **v1.0.0** (2016) - Original Sublist3r by Ahmed Aboul-Ela
-
----
-
-**Current Version: 2.0.0** - Completely modernized and reliable ✨
----
+## Version
+**Current version is 2.0**

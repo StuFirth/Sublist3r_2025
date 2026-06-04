@@ -1,0 +1,7 @@
+{
+  "passive_dns": [
+    {"hostname": "www.example.com", "address": "93.184.216.34"},
+    {"hostname": "blog.example.com", "address": "93.184.216.40"},
+    {"hostname": "lookalike-example.com", "address": "1.2.3.4"}
+  ]
+}
